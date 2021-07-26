@@ -1,12 +1,12 @@
 from os import listdir
 import os
 
-
 logs_path = '../logs'
 
 
 def test_logs(path):
     ft_dir = listdir(path)
+    # local_file = open(path + '/report.txt')
 
     if 'ft_run' not in ft_dir:
         return ['directory missing: ft_run']
@@ -43,8 +43,6 @@ def test_logs(path):
     if error_lines:
         return error_lines
 
-
-
     return ['OK']
 
 
@@ -52,8 +50,21 @@ directory_list = listdir(logs_path)
 
 # print(directory_list)
 
-for i in range(len(directory_list)):
-    # print(directory_list[i])
-    for directory in listdir(logs_path + '/' + directory_list[i]):
-        print(test_logs(logs_path + '/' + directory_list[i] + '/' + directory))
+file = open('../reference_result.txt', 'w')
 
+for i in range(len(directory_list)):
+    if os.path.isdir(logs_path + '/' + directory_list[i]):
+        for directory in listdir(logs_path + '/' + directory_list[i]):
+            answer = test_logs(logs_path + '/' + directory_list[i] + '/' + directory)
+            for line in answer:
+                print(line)
+                if line == 'OK':
+                    file.write('OK: ' + directory_list[i] + '/' + directory + '/\n')
+                else:
+                    file.write('FAIL: ' + directory_list[i] + '/' + directory + '/\n')
+                    if type(line) == type([]):
+                        for a in line:
+                            file.write(a)
+                    else:
+                        file.write(line + '\n')
+file.close()
